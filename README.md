@@ -49,3 +49,11 @@
  ```
  という中身のテキストファイルが出力されます．
  元のデータとほぼほぼ同じになっていることが確認できます．
+
+## 参考リンク
+
+* [wx.grid.Grid — wxPython Phoenix 4.1.1a1 documentation](https://www.wxpython.org/Phoenix/docs/html/wx.grid.Grid.html)
+* [wx.grid.GridTableBase — wxPython Phoenix 4.1.1a1 documentation](https://www.wxpython.org/Phoenix/docs/html/wx.grid.GridTableBase.html#wx-grid-gridtablebase)
+* [wx.grid.GridEvent — wxPython Phoenix 4.1.1a1 documentation](https://www.wxpython.org/Phoenix/docs/html/wx.grid.GridEvent.html)
+* [wxPython|Python-izm — Python の入門から応用までをサポートする学習サイト](https://www.python-izm.com/gui/wxpython/)
+* [Pythonの変数を一時書き出ししておく「joblib」と「pickle」を徹底的に比較する。 - なろう分析記録](https://karupoimou.hatenablog.com/entry/2019/05/26/205006)
