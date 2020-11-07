@@ -359,7 +359,10 @@ class CustTableGrid(gridlib.Grid):
         self.GetTable().ResetView(self)
      
 #-------------------------------------------------------------------------------
-def main(filepath:str,index_axis:str):
+filepath = ""
+def main(fpath:str,index_axis:str):
+    global filepath
+    filepath = fpath
     #---------------------------------------------------------------------------
     def backup_data(event):
         if event == wx.grid.EVT_GRID_CELL_CHANGING:
@@ -387,12 +390,20 @@ def main(filepath:str,index_axis:str):
                 ))
     #---------------------------------------------------------------------------
     def selectMenu(event):
-        if event.GetId() in (1,2,3,4):
+        if event.GetId() in (1,2):
             data = []
             import ast
             for row in range(grid.GetNumberRows()):
-                data.append({grid.GetColLabelValue(col):ast.literal_eval(grid.GetCellValue(row,col)) for col in range(grid.GetNumberCols())})
+                cols = {}
+                for col in range(grid.GetNumberCols()):
+                    try:
+                        cols[grid.GetColLabelValue(col)] = ast.literal_eval(grid.GetCellValue(row,col))
+                    except (ValueError,SyntaxError):
+                        cols[grid.GetColLabelValue(col)] = grid.GetCellValue(row,col)
+                data.append(cols)
+
             if event.GetId() == 1:
+                global filepath
                 filepath = save_file()
                 if filepath == None:
                     frame.SetStatusText(f'保存をキャンセルしました')
@@ -405,11 +416,11 @@ def main(filepath:str,index_axis:str):
                         pickle.dump(data,f)
                 elif ext in (".z",".gz",".bz2",".xz",".lzma"):
                     import joblib
-                    joblib.dump(data,filepath)
+                    joblib.dump(data,filepath,compress=3)
                 else:
                     import pprint
                     with open(filepath,mode="w",encoding="utf-8") as f:
-                        pprint.pprint(data,f,compress=3)
+                        pprint.pprint(data,f)
             elif event.GetId() == 2:
                 ext = os.path.splitext(filepath)[-1]
                 if ext == ".pickle":
@@ -423,19 +434,21 @@ def main(filepath:str,index_axis:str):
                 elif ext in (".z",".gz",".bz2",".xz",".lzma"):
                     import joblib
                     joblib.dump(data,filepath,compress=3)
-            elif event.GetId() in (3,4):
-                filepath = save_file()
-                if filepath == None:
-                    frame.SetStatusText(f'保存をキャンセルしました')
-                    return
-                import pandas as pd
-                data = pd.DataFrame(data)
-                if event.GetId() == 3:
-                    data.to_csv(filepath)
-                elif event.GetId() == 4:
-                    data.to_tsv(filepath)
-
             grid.data = data
+        elif event.GetId() in (3,4):
+            data = []
+            for row in range(grid.GetNumberRows()):
+                data.append({grid.GetColLabelValue(col):grid.GetCellValue(row,col) for col in range(grid.GetNumberCols())})
+            filepath = save_file()
+            if filepath == None:
+                frame.SetStatusText(f'保存をキャンセルしました')
+                return
+            import pandas as pd
+            data = pd.DataFrame(data)
+            if event.GetId() == 3:
+                data.to_csv(filepath)
+            elif event.GetId() == 4:
+                data.to_tsv(filepath)
         #---------------------------------------------------------------------------    
         else:
             # 最後尾に1列追加する
