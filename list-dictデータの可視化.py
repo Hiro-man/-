@@ -371,7 +371,6 @@ def main(fpath:str,index_axis:str):
             for row in range(grid.GetNumberRows()):
                 data.append({grid.GetColLabelValue(col):ast.literal_eval(grid.GetCellValue(row,col)) for col in range(grid.GetNumberCols())})
             grid.data = data
-            print(data)
     #---------------------------------------------------------------------------
     def reset():
         for i in range(grid.GetNumberRows()-1):
@@ -572,10 +571,7 @@ def main(fpath:str,index_axis:str):
     timer = wx.Timer(frame)
     frame.Bind(wx.EVT_TIMER, status_update)
     timer.Start(100) # 0.1s
-    #frame.Bind(wx.EVT_CHAR,status_update)
 
-    #frame.Bind(wx.grid.EVT_GRID_SELECT_CELL, status_update)
-    #frame.Bind(wx.EVT_GRID_CELL_CHANGED, grid.)
     frame.Bind(wx.grid.EVT_GRID_CELL_CHANGING, backup_data)
 
     # 可視化
